@@ -25,8 +25,8 @@ const taskIcons: Record<TaskKey, any> = {
 }
 
 const variantShells = {
-  'listing-directory': 'bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.08),transparent_24%),linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)]',
-  'listing-showcase': 'bg-[linear-gradient(180deg,#ffffff_0%,#f4f9ff_100%)]',
+  'listing-directory': 'bg-[linear-gradient(180deg,#fafafa_0%,#ffffff_55%,#f4f4f5_100%)]',
+  'listing-showcase': 'bg-[linear-gradient(180deg,#fafafa_0%,#ffffff_100%)]',
   'article-editorial': 'bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.08),transparent_20%),linear-gradient(180deg,#fff8ef_0%,#ffffff_100%)]',
   'article-journal': 'bg-[linear-gradient(180deg,#fffdf9_0%,#f7f1ea_100%)]',
   'image-masonry': 'bg-[linear-gradient(180deg,#09101d_0%,#111c2f_100%)] text-white',
@@ -61,6 +61,7 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
   const Icon = taskIcons[task] || LayoutGrid
 
   const isDark = ['image-masonry', 'image-portfolio', 'profile-creator'].includes(layoutKey)
+  const isListingLayout = layoutKey === 'listing-directory' || layoutKey === 'listing-showcase'
   const ui = isDark
     ? {
         muted: 'text-slate-300',
@@ -69,21 +70,29 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         input: 'border-white/10 bg-white/6 text-white',
         button: 'bg-white text-slate-950 hover:bg-slate-200',
       }
-    : layoutKey.startsWith('article') || layoutKey.startsWith('sbm')
+    : isListingLayout
       ? {
-          muted: 'text-[#72594a]',
-          panel: 'border border-[#dbc6b6] bg-white/90',
-          soft: 'border border-[#dbc6b6] bg-[#fff8ef]',
-          input: 'border border-[#dbc6b6] bg-white text-[#2f1d16]',
-          button: 'bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
+          muted: 'text-zinc-600',
+          panel: 'border border-zinc-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]',
+          soft: 'border border-zinc-200 bg-zinc-50/95',
+          input: 'border border-zinc-200 bg-white text-zinc-950',
+          button: 'rounded-full bg-[#e11d8c] text-white hover:bg-[#c9197a]',
         }
-      : {
-          muted: 'text-slate-600',
-          panel: 'border border-slate-200 bg-white',
-          soft: 'border border-slate-200 bg-slate-50',
-          input: 'border border-slate-200 bg-white text-slate-950',
-          button: 'bg-slate-950 text-white hover:bg-slate-800',
-        }
+      : layoutKey.startsWith('article') || layoutKey.startsWith('sbm')
+        ? {
+            muted: 'text-[#72594a]',
+            panel: 'border border-[#dbc6b6] bg-white/90',
+            soft: 'border border-[#dbc6b6] bg-[#fff8ef]',
+            input: 'border border-[#dbc6b6] bg-white text-[#2f1d16]',
+            button: 'bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
+          }
+        : {
+            muted: 'text-slate-600',
+            panel: 'border border-slate-200 bg-white',
+            soft: 'border border-slate-200 bg-slate-50',
+            input: 'border border-slate-200 bg-white text-slate-950',
+            button: 'bg-slate-950 text-white hover:bg-slate-800',
+          }
 
   return (
     <div className={`min-h-screen ${shellClass}`}>
@@ -121,27 +130,62 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         ) : null}
 
         {layoutKey === 'listing-directory' || layoutKey === 'listing-showcase' ? (
-          <section className="mb-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div className={`rounded-[2rem] p-7 shadow-[0_24px_70px_rgba(15,23,42,0.07)] ${ui.panel}`}>
-              <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] opacity-70"><Icon className="h-4 w-4" /> {taskConfig?.label || task}</div>
-              <h1 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-foreground">{taskConfig?.description || 'Latest posts'}</h1>
-              <p className={`mt-4 max-w-2xl text-sm leading-7 ${ui.muted}`}>Built with a cleaner scan rhythm, stronger metadata grouping, and a structure designed for business discovery rather than editorial reading.</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href={taskConfig?.route || '#'} className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.button}`}>Explore results <ArrowRight className="h-4 w-4" /></Link>
-                <Link href="/search" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.soft}`}>Open search</Link>
+          <section className="mb-14 grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-stretch">
+            <div className={`rounded-[1.75rem] p-8 sm:p-10 ${ui.panel}`}>
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#e11d8c]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#c9197a]">
+                <Icon className="h-4 w-4" />
+                All listings
+              </div>
+              <h1 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-zinc-950 sm:text-5xl">Spaces worth opening in a new tab</h1>
+              <p className={`mt-5 max-w-2xl text-base leading-relaxed ${ui.muted}`}>
+                Scroll a calmer directory: bold cover imagery, location hints, and pricing cues aligned with the home experience. Shortlist what feels right, then dig into
+                detail pages without losing your place.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/search" className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold ${ui.button}`}>
+                  Refine search
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50"
+                >
+                  List a space
+                </Link>
+              </div>
+              <div className="mt-10 grid gap-3 sm:grid-cols-3">
+                {[
+                  ['Smart categories', 'Jump across retail, stays, and services without reloading the page.'],
+                  ['Trust-forward cards', 'Ratings, response times, and badges stay visible in the grid.'],
+                  ['Save for later', 'Keep a shortlist while you compare neighborhoods and nightly rates.'],
+                ].map(([title, body]) => (
+                  <div key={title} className="rounded-2xl border border-zinc-100 bg-zinc-50/80 p-4">
+                    <p className="text-sm font-semibold text-zinc-900">{title}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-zinc-600">{body}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <form className={`grid gap-3 rounded-[2rem] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ${ui.soft}`} action={taskConfig?.route || '#'}>
+            <form className={`flex flex-col justify-between gap-6 rounded-[1.75rem] p-6 sm:p-8 ${ui.soft}`} action={taskConfig?.route || '#'}>
               <div>
-                <label className={`text-xs uppercase tracking-[0.2em] ${ui.muted}`}>Category</label>
-                <select name="category" defaultValue={normalizedCategory} className={`mt-2 h-11 w-full rounded-xl px-3 text-sm ${ui.input}`}>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Filters</p>
+                <h2 className="mt-2 text-xl font-semibold text-zinc-900">Narrow the grid</h2>
+                <p className={`mt-2 text-sm leading-relaxed ${ui.muted}`}>Pick a category to focus the feed. We will keep your selection in the query string so sharing links is easy.</p>
+              </div>
+              <div>
+                <label className={`text-xs font-semibold uppercase tracking-[0.18em] ${ui.muted}`}>Category</label>
+                <select name="category" defaultValue={normalizedCategory} className={`mt-2 h-12 w-full rounded-2xl border px-3 text-sm ${ui.input}`}>
                   <option value="all">All categories</option>
                   {CATEGORY_OPTIONS.map((item) => (
-                    <option key={item.slug} value={item.slug}>{item.name}</option>
+                    <option key={item.slug} value={item.slug}>
+                      {item.name}
+                    </option>
                   ))}
                 </select>
               </div>
-              <button type="submit" className={`h-11 rounded-xl text-sm font-medium ${ui.button}`}>Apply filters</button>
+              <button type="submit" className={`h-12 rounded-full text-sm font-semibold ${ui.button}`}>
+                Apply filters
+              </button>
             </form>
           </section>
         ) : null}
@@ -237,15 +281,42 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
           </section>
         ) : null}
 
-        {intro ? (
+        {task === 'listing' ? (
+          <section className={`mb-12 rounded-[1.75rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:p-8`}>
+            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Why hosts keep publishing here</h2>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-600">
+              Listings stay readable on phones, load with sharp photography, and carry structured metadata so guests do not have to DM for basics. The same layout powers
+              boutique stays, creative studios, and neighborhood services—without forcing every category into the same boring template.
+            </p>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-600">
+              When you are ready to go deeper, open search to layer on dates, party size, and location. Support and help articles mirror this flow so answers always map to
+              what you see on screen.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4 text-sm font-semibold">
+              <Link href="/search" className="text-[#e11d8c] hover:underline">
+                Open search
+              </Link>
+              <Link href="/register" className="text-[#e11d8c] hover:underline">
+                Become a host
+              </Link>
+              <Link href="/support" className="text-zinc-700 hover:underline">
+                Talk to support
+              </Link>
+            </div>
+          </section>
+        ) : intro ? (
           <section className={`mb-12 rounded-[2rem] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:p-8 ${ui.panel}`}>
             <h2 className="text-2xl font-semibold text-foreground">{intro.title}</h2>
             {intro.paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 40)} className={`mt-4 text-sm leading-7 ${ui.muted}`}>{paragraph}</p>
+              <p key={paragraph.slice(0, 40)} className={`mt-4 text-sm leading-7 ${ui.muted}`}>
+                {paragraph}
+              </p>
             ))}
             <div className="mt-4 flex flex-wrap gap-4 text-sm">
               {intro.links.map((link) => (
-                <a key={link.href} href={link.href} className="font-semibold text-foreground hover:underline">{link.label}</a>
+                <a key={link.href} href={link.href} className="font-semibold text-foreground hover:underline">
+                  {link.label}
+                </a>
               ))}
             </div>
           </section>

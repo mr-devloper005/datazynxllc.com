@@ -1,7 +1,7 @@
 export const siteTaskDefinitions = [
   {
     key: 'listing',
-    label: 'Business Listings',
+    label: 'Listings',
     route: '/listings',
     description: 'Verified businesses and services.',
     contentType: 'listing',
