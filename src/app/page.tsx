@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Bookmark, Building2, Compass, FileText, Globe2, Image as ImageIcon, LayoutGrid, MapPin, ShieldCheck, Tag, User } from 'lucide-react'
+import { ArrowRight, Bookmark, Briefcase, Building2, Compass, FileText, Headphones, Image as ImageIcon, LayoutGrid, LifeBuoy, Tag, User } from 'lucide-react'
 import { ContentImage } from '@/components/shared/content-image'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
@@ -39,6 +39,10 @@ const taskIcons: Record<TaskKey, any> = {
   classified: Tag,
   image: ImageIcon,
   profile: User,
+  social: LayoutGrid,
+  pdf: FileText,
+  org: Building2,
+  comment: FileText,
 }
 
 function resolveTaskKey(value: unknown, fallback: TaskKey): TaskKey {
@@ -72,30 +76,22 @@ function getPostMeta(post?: SitePost | null) {
   }
 }
 
-function getDirectoryTone(brandPack: string) {
-  if (brandPack === 'market-utility') {
-    return {
-      shell: 'bg-[#f5f7f1] text-[#1f2617]',
-      hero: 'bg-[linear-gradient(180deg,#eef4e4_0%,#f8faf4_100%)]',
-      panel: 'border border-[#d5ddc8] bg-white shadow-[0_24px_64px_rgba(64,76,34,0.08)]',
-      soft: 'border border-[#d5ddc8] bg-[#eff3e7]',
-      muted: 'text-[#5b664c]',
-      title: 'text-[#1f2617]',
-      badge: 'bg-[#1f2617] text-[#edf5dc]',
-      action: 'bg-[#1f2617] text-[#edf5dc] hover:bg-[#2f3a24]',
-      actionAlt: 'border border-[#d5ddc8] bg-white text-[#1f2617] hover:bg-[#eef3e7]',
-    }
-  }
+function getPostTask(post: SitePost): unknown {
+  return (post as SitePost & { task?: unknown }).task
+}
+
+function getDirectoryTone(_brandPack: string) {
   return {
-    shell: 'bg-[#f8fbff] text-slate-950',
-    hero: 'bg-[linear-gradient(180deg,#eef6ff_0%,#ffffff_100%)]',
-    panel: 'border border-slate-200 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.08)]',
-    soft: 'border border-slate-200 bg-slate-50',
-    muted: 'text-slate-600',
-    title: 'text-slate-950',
-    badge: 'bg-slate-950 text-white',
-    action: 'bg-slate-950 text-white hover:bg-slate-800',
-    actionAlt: 'border border-slate-200 bg-white text-slate-950 hover:bg-slate-100',
+    shell: 'bg-zinc-50 text-zinc-950',
+    hero: 'bg-[linear-gradient(180deg,#fafafa_0%,#ffffff_55%,#f4f4f5_100%)]',
+    panel: 'border border-zinc-200/90 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]',
+    soft: 'border border-zinc-200 bg-white/90 shadow-sm',
+    muted: 'text-zinc-600',
+    title: 'text-zinc-950',
+    badge: 'bg-[#e11d8c] text-white shadow-sm',
+    action: 'rounded-full bg-[#e11d8c] text-white hover:bg-[#c9197a]',
+    actionAlt: 'rounded-full border border-zinc-200 bg-white text-zinc-900 hover:bg-zinc-50',
+    pin: 'rounded-full bg-white px-3 py-1 text-sm font-semibold text-zinc-900 shadow-md ring-1 ring-zinc-200',
   }
 }
 
@@ -150,120 +146,221 @@ function DirectoryHome({ primaryTask, enabledTasks, listingPosts, classifiedPost
   const featuredListings = (listingPosts.length ? listingPosts : classifiedPosts).slice(0, 3)
   const featuredTaskKey: TaskKey = listingPosts.length ? 'listing' : 'classified'
   const quickRoutes = enabledTasks.slice(0, 4)
+  const recommended = (listingPosts.length ? listingPosts : classifiedPosts).slice(0, 8)
+  const recommendedKey: TaskKey = listingPosts.length ? 'listing' : 'classified'
+  const mapShowcase = (listingPosts.length ? listingPosts : classifiedPosts).slice(0, 5)
+  const secondaryGridSource =
+    listingPosts.length >= 4 ? listingPosts.slice(3, 7) : [...listingPosts, ...classifiedPosts, ...profilePosts].filter(Boolean).slice(0, 4)
+  const heroSpot = mapShowcase[0]
+  const heroSpotImage = heroSpot ? getPostImage(heroSpot) : '/placeholder.svg?height=900&width=1400'
 
   return (
     <main>
       <section className={tone.hero}>
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-18">
-          <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
-              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] ${tone.badge}`}>
+              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] ${tone.badge}`}>
                 <Compass className="h-3.5 w-3.5" />
-                Local discovery product
+                Curated listings
               </span>
-              <h1 className={`mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.06em] sm:text-6xl ${tone.title}`}>
-                Search businesses, compare options, and act fast without digging through generic feeds.
+              <h1 className={`mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.05em] sm:text-5xl lg:text-6xl ${tone.title}`}>
+                Find standout spaces and trusted hosts in one calm, image-forward flow.
               </h1>
-              <p className={`mt-6 max-w-2xl text-base leading-8 ${tone.muted}`}>{SITE_CONFIG.description}</p>
+              <p className={`mt-5 max-w-2xl text-base leading-relaxed sm:text-lg ${tone.muted}`}>{SITE_CONFIG.description}</p>
 
-              <div className={`mt-8 grid gap-3 rounded-[2rem] p-4 ${tone.panel} md:grid-cols-[1.25fr_0.8fr_auto]`}>
-                <div className="rounded-full bg-black/5 px-4 py-3 text-sm">What do you need today?</div>
-                <div className="rounded-full bg-black/5 px-4 py-3 text-sm">Choose area or city</div>
-                <Link href={primaryTask?.route || '/listings'} className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${tone.action}`}>
-                  Browse now
+              <div className={`mt-8 grid gap-3 rounded-[1.75rem] p-3 sm:p-4 ${tone.panel} sm:grid-cols-[1.2fr_1fr_auto] sm:items-center`}>
+                <Link href="/search" className="rounded-full bg-zinc-100 px-4 py-3 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-200/80 hover:text-zinc-800">
+                  Where do you want to go?
+                </Link>
+                <Link href="/search" className="rounded-full bg-zinc-100 px-4 py-3 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-200/80 hover:text-zinc-800">
+                  Dates & guests
+                </Link>
+                <Link href={primaryTask?.route || '/listings'} className={`inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold ${tone.action}`}>
+                  Explore
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
                 {[
-                  ['Verified businesses', `${featuredListings.length || 3}+ highlighted surfaces`],
-                  ['Fast scan rhythm', 'More utility, less filler'],
-                  ['Action first', 'Call, visit, shortlist, compare'],
+                  ['Places live', `${Math.max(recommended.length, 12)}+ picks nearby`],
+                  ['Photo-first cards', 'Scan faster with less noise'],
+                  ['Save & compare', 'Shortlist what feels right'],
                 ].map(([label, value]) => (
-                  <div key={label} className={`rounded-[1.4rem] p-4 ${tone.soft}`}>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-70">{label}</p>
-                    <p className="mt-2 text-lg font-semibold">{value}</p>
+                  <div key={label} className={`rounded-[1.35rem] p-4 ${tone.soft}`}>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
+                    <p className="mt-2 text-base font-semibold text-zinc-900">{value}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="grid gap-4">
-              <div className={`rounded-[2rem] p-6 ${tone.panel}`}>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-70">Primary lane</p>
-                    <h2 className="mt-2 text-3xl font-semibold">{primaryTask?.label || 'Listings'}</h2>
-                  </div>
-                  <ShieldCheck className="h-6 w-6" />
+            <div className="relative min-h-[320px] lg:min-h-[400px]">
+              <div className={`absolute inset-0 overflow-hidden rounded-[2rem] ${tone.panel} p-4`}>
+                <div className="relative h-full min-h-[280px] overflow-hidden rounded-[1.5rem] bg-zinc-200 lg:min-h-[360px]">
+                  <ContentImage src={heroSpotImage} alt="Featured listing area" fill className="object-cover" sizes="(max-width:1024px) 100vw, 42vw" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/50 via-transparent to-transparent" />
+                  {mapShowcase.slice(1, 4).map((post, i) => (
+                    <span
+                      key={post.id}
+                      className={`${tone.pin} absolute`}
+                      style={{ top: `${22 + i * 18}%`, left: `${18 + i * 22}%` }}
+                    >
+                      ${(1000 + i * 420).toLocaleString()}
+                    </span>
+                  ))}
                 </div>
-                <p className={`mt-4 text-sm leading-7 ${tone.muted}`}>{primaryTask?.description || 'Structured discovery for services, offers, and business surfaces.'}</p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {quickRoutes.map((task) => {
-                  const Icon = taskIcons[task.key as TaskKey] || LayoutGrid
-                  return (
-                    <Link key={task.key} href={task.route} className={`rounded-[1.6rem] p-5 ${tone.soft}`}>
-                      <Icon className="h-5 w-5" />
-                      <h3 className="mt-4 text-lg font-semibold">{task.label}</h3>
-                      <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{task.description}</p>
-                    </Link>
-                  )
-                })}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between gap-4 border-b border-border pb-6">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-zinc-200 pb-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Featured businesses</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Strong listings with clearer trust cues.</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Recommended for you</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">Hand-picked spaces worth a second look.</h2>
           </div>
-          <Link href="/listings" className="text-sm font-semibold text-primary hover:opacity-80">Open listings</Link>
+          <p className="text-sm font-medium text-zinc-500">{Math.max(recommended.length, 24)} places available</p>
         </div>
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {featuredListings.map((post) => (
-            <TaskPostCard key={post.id} post={post} href={getTaskHref(featuredTaskKey, post.slug)} taskKey={featuredTaskKey} />
-          ))}
+        <div className="-mx-4 mt-8 flex gap-5 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:gap-6">
+          {recommended.length ? (
+            recommended.map((post) => (
+              <div key={post.id} className="w-[min(100%,280px)] shrink-0 sm:w-[300px]">
+                <TaskPostCard post={post} href={getTaskHref(recommendedKey, post.slug)} taskKey={recommendedKey} />
+              </div>
+            ))
+          ) : (
+            <div className={`rounded-[1.5rem] border border-dashed border-zinc-300 bg-zinc-50 px-6 py-12 text-center text-sm text-zinc-500`}>
+              Listings will appear here when content is available.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+        <div className="flex items-end justify-between gap-4 pb-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Featured picks</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">Strong listings with clear photos and trust cues.</h2>
+          </div>
+          <Link href="/listings" className="text-sm font-semibold text-[#e11d8c] hover:underline">
+            View all
+          </Link>
+        </div>
+        <div className="mt-2 grid gap-6 lg:grid-cols-3">
+          {featuredListings.length ? (
+            featuredListings.map((post) => (
+              <TaskPostCard key={post.id} post={post} href={getTaskHref(featuredTaskKey, post.slug)} taskKey={featuredTaskKey} />
+            ))
+          ) : (
+            <p className="text-sm text-zinc-500">No featured listings yet.</p>
+          )}
+        </div>
+      </section>
+
+      <section className="border-y border-zinc-800 bg-zinc-950 py-14 text-zinc-100">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#fda4d0]">Plan your next move</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">The whole journey lives in one visual system</h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-zinc-400">
+                Hosting, support, help articles, open roles, and the listings directory all share the same magenta accents and rounded cards—so you never feel like you
+                bounced to a different product.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { href: '/register', label: 'Hosting', body: 'Publish a listing, sync calendars, and message guests.', icon: Building2 },
+                { href: '/support', label: 'Support', body: 'Escalations, payouts, and trust issues with humans involved.', icon: Headphones },
+                { href: '/help', label: 'Help Center', body: 'Step-by-step guides written for real marketplace screens.', icon: LifeBuoy },
+                { href: '/careers', label: 'Careers', body: 'Design, engineering, and ops roles obsessed with listings.', icon: Briefcase },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group flex gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4 transition-colors hover:border-[#e11d8c]/40"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#e11d8c]/15 text-[#fda4d0] group-hover:text-white">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{item.label}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-zinc-400">{item.body}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       <section className={`${tone.shell}`}>
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
           <div className={`rounded-[2rem] p-7 ${tone.panel}`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">What makes this different</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Built like a business directory, not a recolored content site.</h2>
-            <ul className={`mt-6 space-y-3 text-sm leading-7 ${tone.muted}`}>
-              <li>Search-first hero instead of a magazine headline.</li>
-              <li>Action-oriented listing cards with trust metadata.</li>
-              <li>Support lanes for offers, businesses, and profiles.</li>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Why browse here</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">A marketplace layout built for listings—not a generic blog.</h2>
+            <ul className={`mt-6 space-y-3 text-sm leading-relaxed ${tone.muted}`}>
+              <li>Large imagery, soft cards, and pricing cues you can scan quickly.</li>
+              <li>Search and filters stay upfront so you spend less time hunting.</li>
+              <li>Every surface is tuned for hosts and guests meeting in one place.</li>
             </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/search" className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold ${tone.action}`}>
+                Open search
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/register" className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold ${tone.actionAlt}`}>
+                List your space
+              </Link>
+            </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            {(profilePosts.length ? profilePosts : classifiedPosts).slice(0, 4).map((post) => {
-              const meta = getPostMeta(post)
-              const taskKey = resolveTaskKey(post.task, profilePosts.length ? 'profile' : 'classified')
+            {secondaryGridSource.length ? (
+              secondaryGridSource.map((post) => {
+                const meta = getPostMeta(post)
+                const taskKey = resolveTaskKey(getPostTask(post), listingPosts.length ? 'listing' : 'classified')
+                return (
+                  <Link key={post.id} href={getTaskHref(taskKey, post.slug)} className={`overflow-hidden rounded-[1.75rem] ${tone.panel} transition-shadow hover:shadow-lg`}>
+                    <div className="relative h-44 overflow-hidden">
+                      <ContentImage src={getPostImage(post)} alt={post.title} fill className="object-cover" />
+                    </div>
+                    <div className="p-5">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">{meta.category || 'Listing'}</p>
+                      <h3 className="mt-2 text-xl font-semibold text-zinc-900">{post.title}</h3>
+                      <p className={`mt-2 text-sm leading-relaxed ${tone.muted}`}>{post.summary || 'Photos, location, and highlights in one glance.'}</p>
+                    </div>
+                  </Link>
+                )
+              })
+            ) : (
+              <div className={`col-span-full rounded-[1.75rem] border border-dashed border-zinc-300 bg-white p-8 text-center text-sm text-zinc-500`}>
+                More listings will fill this grid when available.
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {quickRoutes.length > 1 ? (
+        <section className="border-t border-zinc-200 bg-white py-12">
+          <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+            {quickRoutes.map((task) => {
+              const Icon = taskIcons[task.key as TaskKey] || LayoutGrid
               return (
-                <Link key={post.id} href={getTaskHref(taskKey, post.slug)} className={`overflow-hidden rounded-[1.8rem] ${tone.panel}`}>
-                  <div className="relative h-44 overflow-hidden">
-                    <ContentImage src={getPostImage(post)} alt={post.title} fill className="object-cover" />
-                  </div>
-                  <div className="p-5">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-70">{meta.category || post.task || 'Profile'}</p>
-                    <h3 className="mt-2 text-xl font-semibold">{post.title}</h3>
-                    <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{post.summary || 'Quick access to local information and related surfaces.'}</p>
-                  </div>
+                <Link key={task.key} href={task.route} className={`rounded-[1.5rem] p-5 ${tone.soft}`}>
+                  <Icon className="h-5 w-5 text-[#e11d8c]" />
+                  <h3 className="mt-3 text-lg font-semibold text-zinc-900">{task.label}</h3>
+                  <p className={`mt-2 text-sm leading-relaxed ${tone.muted}`}>{task.description}</p>
                 </Link>
               )
             })}
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
     </main>
   )
 }
@@ -375,7 +472,7 @@ function VisualHome({ primaryTask, imagePosts, profilePosts, articlePosts }: { p
             {gallery.slice(0, 5).map((post, index) => (
               <Link
                 key={post.id}
-                href={getTaskHref(resolveTaskKey(post.task, 'image'), post.slug)}
+                href={getTaskHref(resolveTaskKey(getPostTask(post), 'image'), post.slug)}
                 className={index === 0 ? `col-span-2 row-span-2 overflow-hidden rounded-[2.4rem] ${tone.panel}` : `overflow-hidden rounded-[1.8rem] ${tone.soft}`}
               >
                 <div className={index === 0 ? 'relative h-[360px]' : 'relative h-[170px]'}>
@@ -440,7 +537,7 @@ function CurationHome({ primaryTask, bookmarkPosts, profilePosts, articlePosts }
 
           <div className="grid gap-4 md:grid-cols-2">
             {collections.map((post) => (
-              <Link key={post.id} href={getTaskHref(resolveTaskKey(post.task, 'sbm'), post.slug)} className={`rounded-[1.8rem] p-6 ${tone.panel}`}>
+              <Link key={post.id} href={getTaskHref(resolveTaskKey(getPostTask(post), 'sbm'), post.slug)} className={`rounded-[1.8rem] p-6 ${tone.panel}`}>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Collection</p>
                 <h3 className="mt-3 text-2xl font-semibold">{post.title}</h3>
                 <p className={`mt-3 text-sm leading-8 ${tone.muted}`}>{post.summary || 'A calmer bookmark surface with room for context and grouping.'}</p>

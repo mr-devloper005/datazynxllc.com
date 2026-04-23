@@ -2,76 +2,72 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Independent reading platform',
+    tagline: 'Spaces & listings',
   },
   footer: {
-    tagline: 'Stories, resources, and discoverable posts',
+    tagline: 'Spaces & listings',
   },
   hero: {
-    badge: 'Latest stories and visuals',
-    title: ['A thoughtful home for', 'stories, visuals, and discovery.'],
+    badge: 'Featured stays & venues',
+    title: ['Find your next', 'space without the noise.'],
     description:
-      'Explore fresh articles, image-led posts, and discoverable content across the platform through a calmer and clearer browsing experience.',
+      'Browse curated listings for Datazynxllc—clear photos, honest descriptions, and search that stays out of your way.',
     primaryCta: {
-      label: 'Read latest stories',
-      href: '/articles',
+      label: 'Browse listings',
+      href: '/listings',
     },
     secondaryCta: {
-      label: 'Explore visuals',
-      href: '/images',
+      label: 'Search places',
+      href: '/search',
     },
-    searchPlaceholder: 'Search stories, visuals, listings, and more',
+    searchPlaceholder: 'Search by city, neighborhood, or listing name',
     focusLabel: 'Focus',
-    featureCardBadge: 'latest cover rotation',
-    featureCardTitle: 'Latest posts shape the visual identity of the homepage.',
+    featureCardBadge: 'Fresh this week',
+    featureCardTitle: 'New listings shape what visitors see first on the home surface.',
     featureCardDescription:
-      'Recent images and stories stay at the center of the experience without changing any core platform behavior.',
+      'The homepage keeps imagery and pricing cues upfront so guests can compare spaces quickly.',
   },
   home: {
     metadata: {
-      title: 'Stories, visuals, and discoverable content',
-      description:
-        'Explore articles, images, listings, and curated posts through a cleaner reading-first experience.',
-      openGraphTitle: 'Stories, visuals, and discoverable content',
-      openGraphDescription:
-        'Discover articles, visual posts, and connected content through a calmer reading-first experience.',
-      keywords: ['story platform', 'article site', 'visual content', 'content discovery'],
+      title: 'Listings and bookable spaces',
+      description: 'Discover listings and spaces on Datazynxllc—built for clean search, strong imagery, and simple discovery.',
+      openGraphTitle: 'Listings and bookable spaces',
+      openGraphDescription: 'Explore curated listings, compare options, and move from search to booking with less friction.',
+      keywords: ['listings', 'spaces', 'local discovery', 'rentals', 'venues', 'Datazynxllc'],
     },
-    introBadge: 'About the platform',
-    introTitle: 'Built for reading, browsing, and connecting different kinds of content.',
+    introBadge: 'About this site',
+    introTitle: 'One destination for listings—designed like a marketplace, not a blog.',
     introParagraphs: [
-      'This site brings together article-style reading, visual browsing, and structured discovery so visitors can move naturally between different content types.',
-      'Instead of separating stories, visuals, and supporting resources into disconnected surfaces, the platform keeps them connected in one place with consistent navigation and easier exploration.',
-      'Whether someone starts with a story, an image-led post, a listing, or a resource page, they can keep discovering related content without friction.',
+      'Every screen is tuned for hosts and guests: large imagery, scannable cards, and navigation that keeps listings in focus.',
+      'Search and filters stay close to the hero so visitors spend less time hunting and more time shortlisting what fits.',
+      'Whether someone arrives from search, social, or a direct link, they land in a consistent listing-first experience.',
     ],
     sideBadge: 'At a glance',
     sidePoints: [
-      'Reading-first homepage with stronger emphasis on stories and imagery.',
-      'Connected sections for articles, visuals, listings, and supporting resources.',
-      'Cleaner browsing rhythm designed to make exploration feel easier.',
-      'Lightweight interactions that keep the experience fast and readable.',
+      'Listing-first layout with generous imagery and soft cards.',
+      'Recommended rows and featured picks for faster browsing.',
+      'Lightweight interactions that keep pages fast on real devices.',
     ],
     primaryLink: {
-      label: 'Browse articles',
-      href: '/articles',
+      label: 'Browse listings',
+      href: '/listings',
     },
     secondaryLink: {
-      label: 'See visuals',
-      href: '/images',
+      label: 'Open search',
+      href: '/search',
     },
   },
   cta: {
     badge: 'Start exploring',
-    title: 'Explore articles, visuals, and resources through one connected experience.',
-    description:
-      'Move between articles, image-led posts, listings, and resources through one clearer and more connected visual system.',
+    title: 'Compare spaces, save favorites, and reach hosts from one listings hub.',
+    description: 'Built for Datazynxllc guests and hosts who want a calmer, more visual marketplace rhythm.',
     primaryCta: {
-      label: 'Get Started Free',
-      href: '/register',
+      label: 'Browse listings',
+      href: '/listings',
     },
     secondaryCta: {
-      label: 'Contact Sales',
-      href: '/contact',
+      label: 'List a space',
+      href: '/register',
     },
   },
   taskSectionHeading: 'Latest {label}',
@@ -81,31 +77,31 @@ export const siteContent = {
 export const taskPageMetadata: Record<Exclude<TaskKey, 'comment' | 'org' | 'social'>, { title: string; description: string }> = {
   article: {
     title: 'Articles and stories',
-    description: 'Read articles, stories, guides, and long-form posts across topics and interests.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   listing: {
     title: 'Listings and discoverable pages',
-    description: 'Explore listings, services, brands, and structured pages organized for easier browsing.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   classified: {
     title: 'Classifieds and announcements',
-    description: 'Browse classifieds, offers, notices, and time-sensitive posts across categories.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   image: {
     title: 'Images and visual posts',
-    description: 'Explore image-led posts, galleries, and visual stories from across the platform.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   profile: {
     title: 'Profiles and public pages',
-    description: 'Discover public profiles, brand pages, and identity-focused posts in one place.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   sbm: {
     title: 'Curated links and saved resources',
-    description: 'Browse useful links, saved references, and curated resources organized for discovery.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
   pdf: {
     title: 'PDFs and downloadable resources',
-    description: 'Open reports, documents, and downloadable resources shared across the platform.',
+    description: 'A Listing site for Datazynxllc, built for clean discovery and structured publishing.',
   },
 }
 
@@ -117,13 +113,13 @@ export const taskIntroCopy: Record<
     title: 'Listings, services, and structured pages',
     paragraphs: [
       'Explore listings, services, brands, and discoverable pages across categories. Each entry is organized to make browsing clearer and help visitors quickly understand what a post offers.',
-      'Listings connect naturally with articles, images, resources, and other content types so supporting information stays easy to reach from the same platform.',
-      'Browse by category to compare posts in context, discover related content, and move between formats without losing your place.',
+      'Use search to narrow by area and dates, then open cards for full detail, photos, and host context.',
+      'Save favorites as you compare so the shortlist stays with you during the session.',
     ],
     links: [
-      { label: 'Read articles', href: '/articles' },
-      { label: 'Explore classifieds', href: '/classifieds' },
-      { label: 'View profiles', href: '/profile' },
+      { label: 'Open search', href: '/search' },
+      { label: 'List a space', href: '/register' },
+      { label: 'Contact support', href: '/contact' },
     ],
   },
   article: {

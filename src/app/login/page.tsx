@@ -2,21 +2,30 @@ import Link from 'next/link'
 import { Bookmark, Building2, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
+import { LoginForm } from '@/components/auth/login-form'
 import { getFactoryState } from '@/design/factory/get-factory-state'
 import { getProductKind } from '@/design/factory/get-product-kind'
 import { LOGIN_PAGE_OVERRIDE_ENABLED, LoginPageOverride } from '@/overrides/login-page'
+import { cn } from '@/lib/utils'
+
+function loginInputClass(kind: ReturnType<typeof getProductKind>) {
+  if (kind === 'visual') return cn('border-white/20 bg-white/10 text-white placeholder:text-slate-400')
+  if (kind === 'editorial') return cn('border-[#dcc8b7] bg-[#fffdfa]')
+  if (kind === 'curation') return cn('border-[#ddcdbd] bg-[#fffaf4]')
+  return cn('border-zinc-200 bg-zinc-50/80')
+}
 
 function getLoginConfig(kind: ReturnType<typeof getProductKind>) {
   if (kind === 'directory') {
     return {
-      shell: 'bg-[#f8fbff] text-slate-950',
-      panel: 'border border-slate-200 bg-white',
-      side: 'border border-slate-200 bg-slate-50',
-      muted: 'text-slate-600',
-      action: 'bg-slate-950 text-white hover:bg-slate-800',
+      shell: 'bg-zinc-50 text-zinc-950',
+      panel: 'border border-zinc-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.08)]',
+      side: 'border border-zinc-200 bg-white',
+      muted: 'text-zinc-600',
+      action: 'bg-[#e11d8c] text-white hover:bg-[#c9197a]',
       icon: Building2,
-      title: 'Access your business dashboard',
-      body: 'Manage listings, verification details, contact info, and local discovery surfaces from one place.',
+      title: 'Welcome back to your listings hub',
+      body: 'Sign in to manage your spaces, messages, and availability. Your session is remembered on this device.',
     }
   }
   if (kind === 'editorial') {
@@ -83,11 +92,7 @@ export default function LoginPage() {
 
           <div className={`rounded-[2rem] p-8 ${config.panel}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Welcome back</p>
-            <form className="mt-6 grid gap-4">
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Email address" />
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Password" type="password" />
-              <button type="submit" className={`inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold ${config.action}`}>Sign in</button>
-            </form>
+            <LoginForm actionClassName={config.action} inputClassName={loginInputClass(productKind)} />
             <div className={`mt-6 flex items-center justify-between text-sm ${config.muted}`}>
               <Link href="/forgot-password" className="hover:underline">Forgot password?</Link>
               <Link href="/register" className="inline-flex items-center gap-2 font-semibold hover:underline">
