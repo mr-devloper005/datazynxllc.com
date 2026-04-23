@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, MapPin, Plus } from 'lucide-react'
+import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, Plus, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
@@ -68,24 +68,30 @@ const variantClasses = {
 
 const directoryPalette = {
   'directory-clean': {
-    shell: 'border-b border-slate-200 bg-white/94 text-slate-950 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl',
-    logo: 'rounded-2xl border border-slate-200 bg-slate-50',
-    nav: 'text-slate-600 hover:text-slate-950',
-    search: 'border border-slate-200 bg-slate-50 text-slate-600',
-    cta: 'bg-slate-950 text-white hover:bg-slate-800',
-    post: 'border border-slate-200 bg-white text-slate-950 hover:bg-slate-50',
-    mobile: 'border-t border-slate-200 bg-white',
+    shell: 'border-b border-zinc-200/80 bg-white/95 text-zinc-950 shadow-[0_8px_40px_rgba(0,0,0,0.04)] backdrop-blur-xl',
+    logo: 'rounded-2xl border border-zinc-200 bg-zinc-50',
+    nav: 'text-zinc-500 hover:text-zinc-950',
+    search: 'border border-zinc-200 bg-zinc-50 text-zinc-600',
+    cta: 'rounded-full bg-zinc-900 text-white hover:bg-zinc-800',
+    post: 'border border-zinc-200 bg-white text-zinc-950 hover:bg-zinc-50',
+    mobile: 'border-t border-zinc-200 bg-white',
   },
   'market-utility': {
-    shell: 'border-b border-[#d7deca] bg-[#f4f6ef]/96 text-[#1f2617] shadow-[0_1px_0_rgba(64,76,34,0.06)] backdrop-blur-xl',
-    logo: 'rounded-xl border border-[#d7deca] bg-white',
-    nav: 'text-[#56604b] hover:text-[#1f2617]',
-    search: 'border border-[#d7deca] bg-white text-[#56604b]',
-    cta: 'bg-[#1f2617] text-[#edf5dc] hover:bg-[#2f3a24]',
-    post: 'border border-[#d7deca] bg-white text-[#1f2617] hover:bg-[#eef2e4]',
-    mobile: 'border-t border-[#d7deca] bg-[#f4f6ef]',
+    shell: 'border-b border-zinc-200/80 bg-white/95 text-zinc-950 shadow-[0_8px_40px_rgba(0,0,0,0.04)] backdrop-blur-xl',
+    logo: 'rounded-2xl border border-zinc-200 bg-white shadow-sm',
+    nav: 'text-zinc-500 hover:text-zinc-950',
+    search: 'border border-zinc-200 bg-zinc-50 text-zinc-600',
+    cta: 'rounded-full bg-zinc-900 text-white hover:bg-zinc-800',
+    post: 'border border-zinc-200 bg-white text-zinc-950 hover:bg-zinc-50',
+    mobile: 'border-t border-zinc-200 bg-zinc-50',
   },
 } as const
+
+const listingNavPills = [
+  { label: 'Browse', href: '/listings', match: (p: string) => p.startsWith('/listings') },
+  { label: 'Discover', href: '/search', match: (p: string) => p.startsWith('/search') },
+  { label: 'List a space', href: '/register', match: (p: string) => p.startsWith('/register') },
+] as const
 
 export function Navbar() {
   if (NAVBAR_OVERRIDE_ENABLED) {
@@ -112,78 +118,127 @@ export function Navbar() {
 
     return (
       <header className={cn('sticky top-0 z-50 w-full', palette.shell)}>
-        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-4">
-            <Link href="/" className="flex shrink-0 items-center gap-3">
-              <div className={cn('flex h-12 w-12 items-center justify-center overflow-hidden p-1.5', palette.logo)}>
-                <img src="/favicon.png?v=20260401" alt={`${SITE_CONFIG.name} logo`} width="48" height="48" className="h-full w-full object-contain" />
+        <nav className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 flex-1 items-center gap-3 lg:gap-6">
+            <Link href="/" className="flex shrink-0 items-center gap-2.5 sm:gap-3">
+              <div className="relative">
+                <div className={cn('flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl p-1 sm:h-12 sm:w-12', palette.logo)}>
+                  <img src="/favicon.png?v=20260401" alt={`${SITE_CONFIG.name} logo`} width="48" height="48" className="h-full w-full object-contain" />
+                </div>
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#e11d8c] text-[9px] font-bold text-white shadow-sm" aria-hidden>
+                  ×
+                </span>
               </div>
               <div className="min-w-0 hidden sm:block">
-                <span className="block truncate text-xl font-semibold">{SITE_CONFIG.name}</span>
-                <span className="block text-[10px] uppercase tracking-[0.24em] opacity-60">{siteContent.navbar.tagline}</span>
+                <span className="block truncate text-lg font-semibold tracking-tight sm:text-xl">{SITE_CONFIG.name}</span>
+                <span className="block text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400">{siteContent.navbar.tagline}</span>
               </div>
             </Link>
 
-            <div className="hidden items-center gap-5 xl:flex">
-              {primaryNavigation.slice(0, 4).map((task) => {
-                const isActive = pathname.startsWith(task.route)
-                return (
-                  <Link key={task.key} href={task.route} className={cn('text-sm font-semibold transition-colors', isActive ? 'text-foreground' : palette.nav)}>
-                    {task.label}
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-
-          <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
-            <div className={cn('flex w-full max-w-xl items-center gap-3 rounded-full px-4 py-3', palette.search)}>
-              <Search className="h-4 w-4" />
-              <span className="text-sm">Find businesses, spaces, and local services</span>
-              <div className="ml-auto hidden items-center gap-1 text-xs opacity-75 md:flex">
-                <MapPin className="h-3.5 w-3.5" />
-                Local discovery
+            <div className="hidden min-w-0 flex-1 justify-center md:flex">
+              <div className="inline-flex items-center gap-0.5 rounded-full bg-zinc-100/90 p-1 ring-1 ring-zinc-200/60">
+                {listingNavPills.map((pill) => {
+                  const active = pill.match(pathname)
+                  return (
+                    <Link
+                      key={pill.href}
+                      href={pill.href}
+                      className={cn(
+                        'rounded-full px-4 py-2 text-sm font-semibold transition-colors',
+                        active ? 'bg-[#e11d8c] text-white shadow-sm' : 'text-zinc-600 hover:bg-white/80 hover:text-zinc-900',
+                      )}
+                    >
+                      {pill.label}
+                    </Link>
+                  )
+                })}
               </div>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            {primaryTask ? (
-              <Link href={primaryTask.route} className="hidden items-center gap-2 rounded-full border border-current/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] opacity-75 md:inline-flex">
-                <Sparkles className="h-3.5 w-3.5" />
-                {primaryTask.label}
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <Button variant="ghost" size="icon" className="hidden rounded-full text-zinc-500 hover:text-zinc-900 md:flex" asChild>
+              <Link href="/search" aria-label="Search and region">
+                <Globe className="h-5 w-5" />
               </Link>
-            ) : null}
+            </Button>
 
             {isAuthenticated ? (
               <NavbarAuthControls />
             ) : (
               <div className="hidden items-center gap-2 md:flex">
-                <Button variant="ghost" size="sm" asChild className="rounded-full px-4">
-                  <Link href="/login">Sign In</Link>
+                <Button variant="ghost" size="sm" asChild className={cn('rounded-full px-5 font-semibold', palette.cta)}>
+                  <Link href="/login">Login</Link>
                 </Button>
-                <Button size="sm" asChild className={cn('rounded-full', palette.cta)}>
+                <Button size="sm" asChild className="rounded-full border border-zinc-200 bg-white px-4 font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50">
                   <Link href="/register">
                     <Plus className="mr-1 h-4 w-4" />
-                    Add Listing
+                    Post listing
                   </Link>
                 </Button>
               </div>
             )}
 
-            <Button variant="ghost" size="icon" className="rounded-full lg:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            <Button variant="ghost" size="icon" className="rounded-full md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Menu">
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </nav>
 
+        <div className="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 md:block lg:px-8">
+          <div className="flex items-center gap-3 rounded-[1.75rem] border border-zinc-200/80 bg-white py-2.5 pl-5 pr-2.5 shadow-[0_20px_50px_rgba(15,23,42,0.08)]">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+              <Link href="/search" className="min-w-0 flex-1 basis-[140px] truncate font-medium text-zinc-400 transition-colors hover:text-zinc-700">
+                Where are you going?
+              </Link>
+              <span className="hidden h-8 w-px shrink-0 bg-zinc-200 lg:block" aria-hidden />
+              <Link href="/search" className="hidden shrink-0 text-zinc-400 transition-colors hover:text-zinc-700 lg:inline">
+                Check in
+              </Link>
+              <Link href="/search" className="hidden shrink-0 text-zinc-400 transition-colors hover:text-zinc-700 lg:inline">
+                Check out
+              </Link>
+              <Link href="/search" className="hidden shrink-0 text-zinc-400 transition-colors hover:text-zinc-700 lg:inline">
+                Guests
+              </Link>
+            </div>
+            <Button size="icon" className="h-12 w-12 shrink-0 rounded-full bg-[#e11d8c] text-white hover:bg-[#c9197a]" asChild>
+              <Link href="/search" aria-label="Search listings">
+                <Search className="h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
         {isMobileMenuOpen && (
           <div className={palette.mobile}>
             <div className="space-y-2 px-4 py-4">
-              <div className={cn('mb-3 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium', palette.search)}>
-                <Search className="h-4 w-4" />
-                Find businesses, spaces, and services
+              <div className="mb-3 flex flex-wrap gap-2">
+                {listingNavPills.map((pill) => {
+                  const active = pill.match(pathname)
+                  return (
+                    <Link
+                      key={pill.href}
+                      href={pill.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        'rounded-full px-4 py-2 text-sm font-semibold',
+                        active ? 'bg-[#e11d8c] text-white' : 'border border-zinc-200 bg-white text-zinc-700',
+                      )}
+                    >
+                      {pill.label}
+                    </Link>
+                  )
+                })}
               </div>
+              <Link
+                href="/search"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn('mb-3 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium', palette.search)}
+              >
+                <Search className="h-4 w-4" />
+                Search spaces and listings
+              </Link>
               {mobileNavigation.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (

@@ -1,114 +1,167 @@
-import { Building2, FileText, Image as ImageIcon, Mail, MapPin, Phone, Sparkles, Bookmark } from 'lucide-react'
-import { NavbarShell } from '@/components/shared/navbar-shell'
-import { Footer } from '@/components/shared/footer'
+import Link from 'next/link'
+import { Building2, Clock, Headphones, Mail, MapPin, MessageSquare, Send } from 'lucide-react'
+import { MarketingPageLayout, MarketingPrimaryButton, MarketingSecondaryButton } from '@/components/shared/marketing-page-layout'
+import { Card, CardContent } from '@/components/ui/card'
 import { SITE_CONFIG } from '@/lib/site-config'
-import { getFactoryState } from '@/design/factory/get-factory-state'
-import { getProductKind } from '@/design/factory/get-product-kind'
 import { CONTACT_PAGE_OVERRIDE_ENABLED, ContactPageOverride } from '@/overrides/contact-page'
 
-function getTone(kind: ReturnType<typeof getProductKind>) {
-  if (kind === 'directory') {
-    return {
-      shell: 'bg-[#f8fbff] text-slate-950',
-      panel: 'border border-slate-200 bg-white',
-      soft: 'border border-slate-200 bg-slate-50',
-      muted: 'text-slate-600',
-      action: 'bg-slate-950 text-white hover:bg-slate-800',
-    }
-  }
-  if (kind === 'editorial') {
-    return {
-      shell: 'bg-[#fbf6ee] text-[#241711]',
-      panel: 'border border-[#dcc8b7] bg-[#fffdfa]',
-      soft: 'border border-[#e6d6c8] bg-[#fff4e8]',
-      muted: 'text-[#6e5547]',
-      action: 'bg-[#241711] text-[#fff1e2] hover:bg-[#3a241b]',
-    }
-  }
-  if (kind === 'visual') {
-    return {
-      shell: 'bg-[#07101f] text-white',
-      panel: 'border border-white/10 bg-white/6',
-      soft: 'border border-white/10 bg-white/5',
-      muted: 'text-slate-300',
-      action: 'bg-[#8df0c8] text-[#07111f] hover:bg-[#77dfb8]',
-    }
-  }
-  return {
-    shell: 'bg-[#f7f1ea] text-[#261811]',
-    panel: 'border border-[#ddcdbd] bg-[#fffaf4]',
-    soft: 'border border-[#e8dbce] bg-[#f3e8db]',
-    muted: 'text-[#71574a]',
-    action: 'bg-[#5b2b3b] text-[#fff0f5] hover:bg-[#74364b]',
-  }
-}
+const lanes = [
+  {
+    icon: Building2,
+    title: 'Hosting & listings',
+    body: 'Questions about publishing a space, calendar sync, pricing rules, or verification. Include your listing URL if you already have a draft.',
+  },
+  {
+    icon: Headphones,
+    title: 'Trips & guest help',
+    body: 'Before or after a stay: payments, check-in instructions, or cancellations. Add reservation dates and the listing name so we can trace it quickly.',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Press & partnerships',
+    body: 'Media requests, co-marketing, or integrations. Tell us your audience size and the timeline you are working toward.',
+  },
+] as const
 
 export default function ContactPage() {
   if (CONTACT_PAGE_OVERRIDE_ENABLED) {
     return <ContactPageOverride />
   }
 
-  const { recipe } = getFactoryState()
-  const productKind = getProductKind(recipe)
-  const tone = getTone(productKind)
-  const lanes =
-    productKind === 'directory'
-      ? [
-          { icon: Building2, title: 'Business onboarding', body: 'Add listings, verify operational details, and bring your business surface live quickly.' },
-          { icon: Phone, title: 'Partnership support', body: 'Talk through bulk publishing, local growth, and operational setup questions.' },
-          { icon: MapPin, title: 'Coverage requests', body: 'Need a new geography or category lane? We can shape the directory around it.' },
-        ]
-      : productKind === 'editorial'
-        ? [
-            { icon: FileText, title: 'Editorial submissions', body: 'Pitch essays, columns, and long-form ideas that fit the publication.' },
-            { icon: Mail, title: 'Newsletter partnerships', body: 'Coordinate sponsorships, collaborations, and issue-level campaigns.' },
-            { icon: Sparkles, title: 'Contributor support', body: 'Get help with voice, formatting, and publication workflow questions.' },
-          ]
-        : productKind === 'visual'
-          ? [
-              { icon: ImageIcon, title: 'Creator collaborations', body: 'Discuss gallery launches, creator features, and visual campaigns.' },
-              { icon: Sparkles, title: 'Licensing and use', body: 'Reach out about usage rights, commercial requests, and visual partnerships.' },
-              { icon: Mail, title: 'Media kits', body: 'Request creator decks, editorial support, or visual feature placement.' },
-            ]
-          : [
-              { icon: Bookmark, title: 'Collection submissions', body: 'Suggest resources, boards, and links that deserve a place in the library.' },
-              { icon: Mail, title: 'Resource partnerships', body: 'Coordinate curation projects, reference pages, and link programs.' },
-              { icon: Sparkles, title: 'Curator support', body: 'Need help organizing shelves, collections, or profile-connected boards?' },
-            ]
-
   return (
-    <div className={`min-h-screen ${tone.shell}`}>
-      <NavbarShell />
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Contact {SITE_CONFIG.name}</p>
-            <h1 className="mt-4 text-5xl font-semibold tracking-[-0.05em]">A support page that matches the product, not a generic contact form.</h1>
-            <p className={`mt-5 max-w-2xl text-sm leading-8 ${tone.muted}`}>Tell us what you are trying to publish, fix, or launch. We will route it through the right lane instead of forcing every request into the same support bucket.</p>
-            <div className="mt-8 space-y-4">
-              {lanes.map((lane) => (
-                <div key={lane.title} className={`rounded-[1.6rem] p-5 ${tone.soft}`}>
-                  <lane.icon className="h-5 w-5" />
-                  <h2 className="mt-3 text-xl font-semibold">{lane.title}</h2>
-                  <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{lane.body}</p>
-                </div>
-              ))}
-            </div>
+    <MarketingPageLayout
+      heroPattern
+      eyebrow="Contact"
+      title={`Talk with ${SITE_CONFIG.name}`}
+      description="Skip the black hole inbox. Route your note to the right lane—hosts, guests, or partnerships—and we will reply with clear next steps instead of a ticket number and silence."
+      actions={
+        <>
+          <MarketingPrimaryButton href="#contact-form">
+            <span className="inline-flex items-center gap-2">
+              <Send className="h-4 w-4" />
+              Write to us
+            </span>
+          </MarketingPrimaryButton>
+          <MarketingSecondaryButton href="/help">Help Center</MarketingSecondaryButton>
+          <MarketingSecondaryButton href="/support">Support</MarketingSecondaryButton>
+        </>
+      }
+    >
+      <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+        <div className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-1">
+            {lanes.map((lane) => (
+              <Card key={lane.title} className="border-zinc-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
+                <CardContent className="flex gap-4 p-5 sm:p-6">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#e11d8c]/10 text-[#e11d8c]">
+                    <lane.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-zinc-900">{lane.title}</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-zinc-600">{lane.body}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          <div className={`rounded-[2rem] p-7 ${tone.panel}`}>
-            <h2 className="text-2xl font-semibold">Send a message</h2>
-            <form className="mt-6 grid gap-4">
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Your name" />
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Email address" />
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="What do you need help with?" />
-              <textarea className="min-h-[180px] rounded-2xl border border-current/10 bg-transparent px-4 py-3 text-sm" placeholder="Share the full context so we can respond with the right next step." />
-              <button type="submit" className={`inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold ${tone.action}`}>Send message</button>
+          <Card className="border-zinc-200 bg-zinc-900 text-zinc-100 shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
+            <CardContent className="space-y-4 p-6 sm:p-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fda4d0]">Direct lines</p>
+              <div className="flex flex-wrap gap-6 text-sm">
+                <a href={`mailto:hello@${SITE_CONFIG.domain}`} className="inline-flex items-center gap-2 font-medium text-white hover:text-[#fda4d0]">
+                  <Mail className="h-4 w-4 text-[#fda4d0]" />
+                  hello@{SITE_CONFIG.domain}
+                </a>
+                <span className="inline-flex items-center gap-2 text-zinc-400">
+                  <MapPin className="h-4 w-4" />
+                  Remote-first team
+                </span>
+              </div>
+              <div className="flex items-start gap-2 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-zinc-500" />
+                <span>We read every message in order. Most paths get a first reply within one business day; urgent host or guest issues are prioritized sooner.</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card id="contact-form" className="scroll-mt-24 border-zinc-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+          <CardContent className="p-6 sm:p-8">
+            <h2 className="text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl">Send a message</h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+              The more context you share—screenshots, links, dates—the faster we can answer without bouncing you between teams.
+            </p>
+            <form className="mt-6 grid gap-4" action="#" method="post">
+              <div>
+                <label htmlFor="contact-name" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Name
+                </label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  autoComplete="name"
+                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-email" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Email
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-subject" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Topic
+                </label>
+                <input
+                  id="contact-subject"
+                  name="subject"
+                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
+                  placeholder="e.g. Payout delay on Maple Ave listing"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-body" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                  Details
+                </label>
+                <textarea
+                  id="contact-body"
+                  name="message"
+                  rows={6}
+                  className="mt-2 min-h-[160px] w-full resize-y rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
+                  placeholder="Include listing links, reservation IDs, what you expected, and what happened instead."
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-[#e11d8c] px-6 text-sm font-semibold text-white shadow-[0_14px_40px_rgba(225,29,140,0.28)] transition-colors hover:bg-[#c9197a]"
+              >
+                Send message
+              </button>
+              <p className="text-center text-xs text-zinc-500">
+                Prefer self-serve?{' '}
+                <Link href="/help" className="font-semibold text-[#e11d8c] hover:underline">
+                  Browse guides
+                </Link>{' '}
+                or{' '}
+                <Link href="/support" className="font-semibold text-[#e11d8c] hover:underline">
+                  open a support case
+                </Link>
+                .
+              </p>
             </form>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+    </MarketingPageLayout>
   )
 }

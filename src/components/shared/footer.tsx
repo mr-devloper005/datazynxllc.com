@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileText, Building2, LayoutGrid, Tag, Github, Twitter, Linkedin, Image as ImageIcon, User, ArrowRight, Sparkles } from 'lucide-react'
+import { FileText, Building2, LayoutGrid, Tag, Github, Twitter, Linkedin, Instagram, Image as ImageIcon, User, ArrowRight, Sparkles } from 'lucide-react'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import { siteContent } from '@/config/site.content'
 import { getFactoryState } from '@/design/factory/get-factory-state'
@@ -49,6 +49,7 @@ const socialLinks = [
   { name: 'Twitter', href: 'https://twitter.com', icon: Twitter },
   { name: 'GitHub', href: 'https://github.com', icon: Github },
   { name: 'LinkedIn', href: 'https://linkedin.com', icon: Linkedin },
+  { name: 'Instagram', href: 'https://instagram.com', icon: Instagram },
 ]
 
 export function Footer() {
@@ -61,21 +62,61 @@ export function Footer() {
   const primaryTask = enabledTasks.find((task) => task.key === recipe.primaryTask) || enabledTasks[0]
 
   if (recipe.footer === 'minimal-footer') {
+    const rowLinks = [
+      { name: 'Home', href: '/' },
+      { name: 'Hosting', href: '/register' },
+      { name: 'Support', href: '/support' },
+      { name: 'Help Center', href: '/help' },
+      { name: 'Careers', href: '/careers' },
+    ]
     return (
-      <footer className="border-t border-[#d7deca] bg-[#f4f6ef] text-[#1f2617]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div>
-            <p className="text-lg font-semibold">{SITE_CONFIG.name}</p>
-            <p className="mt-1 text-sm text-[#56604b]">{SITE_CONFIG.description}</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {enabledTasks.slice(0, 5).map((task) => (
-              <Link key={task.key} href={task.route} className="rounded-lg border border-[#d7deca] bg-white px-3 py-2 text-sm font-medium text-[#1f2617] hover:bg-[#ebefdf]">
-                {task.label}
+      <footer className="relative overflow-hidden border-t border-zinc-800 bg-zinc-950 text-zinc-100">
+        <div className="relative z-[1] mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex flex-wrap items-center gap-6">
+              <Link href="/" className="flex items-center gap-2">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e11d8c] text-sm font-bold text-white">×</span>
+                <span className="text-xl font-semibold tracking-tight text-white">{SITE_CONFIG.name}</span>
               </Link>
-            ))}
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full border border-zinc-700 bg-zinc-900/80 px-3 py-1.5 text-xs font-medium text-zinc-300">English (US)</span>
+                <span className="rounded-full border border-zinc-700 bg-zinc-900/80 px-3 py-1.5 text-xs font-medium text-zinc-300">$ USD</span>
+              </div>
+            </div>
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-zinc-400">
+              {rowLinks.map((item) => (
+                <Link key={item.href + item.name} href={item.href} className="transition-colors hover:text-white">
+                  {item.name}
+                </Link>
+              ))}
+              {enabledTasks.map((task) => (
+                <Link key={task.key} href={task.route} className="transition-colors hover:text-white">
+                  {task.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+          <div className="mt-10 flex flex-col gap-6 border-t border-zinc-800 pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-zinc-500">&copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.</p>
+            <div className="flex gap-2">
+              {socialLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 transition-colors hover:border-[#e11d8c]/50 hover:text-white"
+                  aria-label={item.name}
+                >
+                  <item.icon className="h-4 w-4" />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
+        <p className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-[120%] -translate-x-1/2 translate-y-1/4 select-none text-center text-[clamp(3.5rem,14vw,10rem)] font-bold uppercase leading-none tracking-tighter text-white/[0.04]">
+          {SITE_CONFIG.name}
+        </p>
       </footer>
     )
   }
