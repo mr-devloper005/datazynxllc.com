@@ -27,6 +27,7 @@ export default function ContactPage() {
   if (CONTACT_PAGE_OVERRIDE_ENABLED) {
     return <ContactPageOverride />
   }
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || `hello@${SITE_CONFIG.domain}`
 
   return (
     <MarketingPageLayout
@@ -42,6 +43,12 @@ export default function ContactPage() {
               Write to us
             </span>
           </MarketingPrimaryButton>
+          <MarketingSecondaryButton href={`mailto:${contactEmail}`}>
+            <span className="inline-flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Email Us
+            </span>
+          </MarketingSecondaryButton>
           <MarketingSecondaryButton href="/help">Help Center</MarketingSecondaryButton>
           <MarketingSecondaryButton href="/support">Support</MarketingSecondaryButton>
         </>
@@ -69,9 +76,9 @@ export default function ContactPage() {
             <CardContent className="space-y-4 p-6 sm:p-7">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fda4d0]">Direct lines</p>
               <div className="flex flex-wrap gap-6 text-sm">
-                <a href={`mailto:hello@${SITE_CONFIG.domain}`} className="inline-flex items-center gap-2 font-medium text-white hover:text-[#fda4d0]">
+                <a href={`mailto:${contactEmail}`} className="inline-flex items-center gap-2 font-medium text-white hover:text-[#fda4d0]">
                   <Mail className="h-4 w-4 text-[#fda4d0]" />
-                  hello@{SITE_CONFIG.domain}
+                  {contactEmail}
                 </a>
                 <span className="inline-flex items-center gap-2 text-zinc-400">
                   <MapPin className="h-4 w-4" />
