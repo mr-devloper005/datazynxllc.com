@@ -1,164 +1,56 @@
-import Link from 'next/link'
-import { Building2, Clock, Headphones, Mail, MapPin, MessageSquare, Send } from 'lucide-react'
-import { MarketingPageLayout, MarketingPrimaryButton, MarketingSecondaryButton } from '@/components/shared/marketing-page-layout'
-import { Card, CardContent } from '@/components/ui/card'
-import { SITE_CONFIG } from '@/lib/site-config'
-import { CONTACT_PAGE_OVERRIDE_ENABLED, ContactPageOverride } from '@/overrides/contact-page'
+import { Mail, MessageSquareText, ShieldCheck } from 'lucide-react';
 
-const lanes = [
-  {
-    icon: Building2,
-    title: 'Hosting & listings',
-    body: 'Questions about publishing a space, calendar sync, pricing rules, or verification. Include your listing URL if you already have a draft.',
-  },
-  {
-    icon: Headphones,
-    title: 'Trips & guest help',
-    body: 'Before or after a stay: payments, check-in instructions, or cancellations. Add reservation dates and the listing name so we can trace it quickly.',
-  },
-  {
-    icon: MessageSquare,
-    title: 'Press & partnerships',
-    body: 'Media requests, co-marketing, or integrations. Tell us your audience size and the timeline you are working toward.',
-  },
-] as const
+import { ContactLeadForm } from '@/components/shared/contact-lead-form';
+import { Footer } from '@/components/shared/footer';
+import { NavbarShell } from '@/components/shared/navbar-shell';
+
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Datazynxllc';
+
+const contactHighlights = [
+  { icon: Mail, title: 'Direct response', copy: 'Your message is saved securely and routed to the right team.' },
+  { icon: MessageSquareText, title: 'Clear details', copy: 'Share your requirement, question, or collaboration idea in one place.' },
+  { icon: ShieldCheck, title: 'Reliable follow-up', copy: 'We keep the request record so every conversation stays traceable.' },
+];
 
 export default function ContactPage() {
-  if (CONTACT_PAGE_OVERRIDE_ENABLED) {
-    return <ContactPageOverride />
-  }
-  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || `hello@${SITE_CONFIG.domain}`
-
   return (
-    <MarketingPageLayout
-      heroPattern
-      eyebrow="Contact"
-      title={`Talk with ${SITE_CONFIG.name}`}
-      description="Skip the black hole inbox. Route your note to the right lane—hosts, guests, or partnerships—and we will reply with clear next steps instead of a ticket number and silence."
-      actions={
-        <>
-          <MarketingPrimaryButton href="#contact-form">
-            <span className="inline-flex items-center gap-2">
-              <Send className="h-4 w-4" />
-              Write to us
-            </span>
-          </MarketingPrimaryButton>
-          <MarketingSecondaryButton href="/help">Help Center</MarketingSecondaryButton>
-          <MarketingSecondaryButton href="/support">Support</MarketingSecondaryButton>
-        </>
-      }
-    >
-      <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-        <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-1">
-            {lanes.map((lane) => (
-              <Card key={lane.title} className="border-zinc-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)]">
-                <CardContent className="flex gap-4 p-5 sm:p-6">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#e11d8c]/10 text-[#e11d8c]">
-                    <lane.icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-zinc-900">{lane.title}</h2>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-600">{lane.body}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <div className="min-h-screen bg-[#f7f1e8] text-stone-950">
+      <NavbarShell />
+      <main>
+        <section className="relative overflow-hidden px-6 py-20 md:px-10 lg:px-16">
+          <div className="absolute left-[-10%] top-10 h-72 w-72 rounded-full bg-amber-200/40 blur-3xl" />
+          <div className="absolute bottom-0 right-[-8%] h-80 w-80 rounded-full bg-stone-300/50 blur-3xl" />
 
-          <Card className="border-zinc-200 bg-zinc-900 text-zinc-100 shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
-            <CardContent className="space-y-4 p-6 sm:p-7">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fda4d0]">Direct lines</p>
-              <div className="flex flex-wrap gap-6 text-sm">
-                <span className="inline-flex items-center gap-2 text-zinc-400">
-                  <MapPin className="h-4 w-4" />
-                  Remote-first team
-                </span>
-              </div>
-              <div className="flex items-start gap-2 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
-                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-zinc-500" />
-                <span>We read every message in order. Most paths get a first reply within one business day; urgent host or guest issues are prioritized sooner.</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card id="contact-form" className="scroll-mt-24 border-zinc-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-          <CardContent className="p-6 sm:p-8">
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl">Send a message</h2>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-              The more context you share—screenshots, links, dates—the faster we can answer without bouncing you between teams.
-            </p>
-            <form className="mt-6 grid gap-4" action="#" method="post">
-              <div>
-                <label htmlFor="contact-name" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Name
-                </label>
-                <input
-                  id="contact-name"
-                  name="name"
-                  autoComplete="name"
-                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
-                  placeholder="Your name"
-                />
-              </div>
-              <div>
-                <label htmlFor="contact-email" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Email
-                </label>
-                <input
-                  id="contact-email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
-                  placeholder="you@example.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="contact-subject" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Topic
-                </label>
-                <input
-                  id="contact-subject"
-                  name="subject"
-                  className="mt-2 h-12 w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
-                  placeholder="e.g. Payout delay on Maple Ave listing"
-                />
-              </div>
-              <div>
-                <label htmlFor="contact-body" className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  Details
-                </label>
-                <textarea
-                  id="contact-body"
-                  name="message"
-                  rows={6}
-                  className="mt-2 min-h-[160px] w-full resize-y rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none transition-colors focus-visible:border-[#e11d8c]/50"
-                  placeholder="Include listing links, reservation IDs, what you expected, and what happened instead."
-                />
-              </div>
-              <button
-                type="submit"
-                className="inline-flex h-12 items-center justify-center rounded-full bg-[#e11d8c] px-6 text-sm font-semibold text-white shadow-[0_14px_40px_rgba(225,29,140,0.28)] transition-colors hover:bg-[#c9197a]"
-              >
-                Send message
-              </button>
-              <p className="text-center text-xs text-zinc-500">
-                Prefer self-serve?{' '}
-                <Link href="/help" className="font-semibold text-[#e11d8c] hover:underline">
-                  Browse guides
-                </Link>{' '}
-                or{' '}
-                <Link href="/support" className="font-semibold text-[#e11d8c] hover:underline">
-                  open a support case
-                </Link>
-                .
+          <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.35em] text-stone-500">Contact</p>
+              <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[0.95] tracking-[-0.06em] text-stone-950 md:text-7xl">
+                Let&apos;s talk about your next move.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-700">
+                Use this form to reach {siteName}. Your request will be recorded and shared with the support team for follow-up.
               </p>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </MarketingPageLayout>
-  )
+
+              <div className="mt-8 grid gap-4">
+                {contactHighlights.map((item) => (
+                  <div key={item.title} className="flex gap-4 rounded-3xl border border-stone-200 bg-white/60 p-5 shadow-sm">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-stone-950 text-white">
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-black text-stone-950">{item.title}</h2>
+                      <p className="mt-1 text-sm leading-6 text-stone-600">{item.copy}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <ContactLeadForm />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
 }
