@@ -96,22 +96,8 @@ export function Footer() {
               ))}
             </nav>
           </div>
-          <div className="mt-10 flex flex-col gap-6 border-t border-zinc-800 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-10 border-t border-zinc-800 pt-8">
             <p className="text-sm text-zinc-500">&copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.</p>
-            <div className="flex gap-2">
-              {socialLinks.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 transition-colors hover:border-[#e11d8c]/50 hover:text-white"
-                  aria-label={item.name}
-                >
-                  <item.icon className="h-4 w-4" />
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
         <p className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-[120%] -translate-x-1/2 translate-y-1/4 select-none text-center text-[clamp(3.5rem,14vw,10rem)] font-bold uppercase leading-none tracking-tighter text-white/[0.04]">
@@ -160,16 +146,6 @@ export function Footer() {
                     <li key={item.name}><Link href={item.href} className="hover:text-white">{item.name}</Link></li>
                   ))}
                 </ul>
-              </div>
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Connect</h3>
-                <div className="mt-4 flex gap-3">
-                  {socialLinks.map((item) => (
-                    <Link key={item.name} href={item.href} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/10 bg-white/8 p-2.5 text-slate-200 hover:bg-white/12 hover:text-white">
-                      <item.icon className="h-4 w-4" />
-                    </Link>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
