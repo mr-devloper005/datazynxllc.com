@@ -210,14 +210,6 @@ export function DirectoryTaskDetailPage({
               </div>
             </section>
 
-            {mapEmbedUrl ? (
-              <div className="overflow-hidden rounded-lg border border-[#c7ccd4] bg-white">
-                <div className="border-b border-[#c7ccd4] px-5 py-3">
-                  <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#1f3a70]"><ShieldCheck className="h-4 w-4" /> Location Map</p>
-                </div>
-                <iframe src={mapEmbedUrl} title={`${post.title} map`} className="h-[300px] w-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-              </div>
-            ) : null}
           </div>
         </section>
 
